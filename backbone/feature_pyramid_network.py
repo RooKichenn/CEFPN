@@ -43,7 +43,7 @@ class SCE(nn.Module):
 
         for m in self.modules():
             if isinstance(m, nn.Conv2d):
-                self.xavier_init(m, distribution='uniform')
+                xavier_init(m, distribution='uniform')
 
     def forward(self, x):
         out_size = x.shape[-2:]
@@ -65,7 +65,7 @@ class CAG(nn.Module):
         self.sigmoid = nn.Sigmoid()
         for m in self.modules():
             if isinstance(m, nn.Conv2d):
-                self.xavier_init(m, distribution='uniform')
+                xavier_init(m, distribution='uniform')
 
     def forward(self, x):
         fc1 = self.sigmoid(self.fc1(self.avgpool(x)))
@@ -124,7 +124,7 @@ class FeaturePyramidNetwork(nn.Module):
         self.conv_1x1_2 = nn.Conv2d(256, 256, 1)
         for m in self.modules():
             if isinstance(m, nn.Conv2d):
-                self.xavier_init(m, distribution='uniform')
+                xavier_init(m, distribution='uniform')
 
     def forward(self, x):
         names = list(x.keys())
