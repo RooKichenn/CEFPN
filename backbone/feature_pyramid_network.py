@@ -8,6 +8,16 @@ import torch.nn.functional as F
 from torch.jit.annotations import Tuple, List, Dict
 
 
+def xavier_init(m, gain=1, bias=0, distribution='normal'):
+    assert distribution in ['uniform', 'normal']
+    if distribution == 'uniform':
+        nn.init.xavier_uniform_(m.weight, gain=gain)
+    else:
+        nn.init.xavier_normal_(m.weight, gain=gain)
+    if hasattr(m, 'bias'):
+        nn.init.constant_(m.bias, bias)
+
+
 class SCE(nn.Module):
     def __init__(self, in_channels):
         super(SCE, self).__init__()
@@ -31,6 +41,10 @@ class SCE(nn.Module):
         self.globalpool = nn.AdaptiveAvgPool2d((1, 1))
         self.conv1x1_3 = nn.Conv2d(in_channels, in_channels // 8, kernel_size=1)
 
+        for m in self.modules():
+            if isinstance(m, nn.Conv2d):
+                self.xavier_init(m, distribution='uniform')
+
     def forward(self, x):
         out_size = x.shape[-2:]
         out_size = [x*2 for x in out_size]
@@ -49,6 +63,9 @@ class CAG(nn.Module):
         self.fc1 = nn.Conv2d(in_channels, in_channels, 1)
         self.fc2 = nn.Conv2d(in_channels, in_channels, 1)
         self.sigmoid = nn.Sigmoid()
+        for m in self.modules():
+            if isinstance(m, nn.Conv2d):
+                self.xavier_init(m, distribution='uniform')
 
     def forward(self, x):
         fc1 = self.sigmoid(self.fc1(self.avgpool(x)))
@@ -105,6 +122,9 @@ class FeaturePyramidNetwork(nn.Module):
         self.conv_1x1_4 = nn.Conv2d(1024, 256, 1)
         self.conv_1x1_3 = nn.Conv2d(512, 256, 1)
         self.conv_1x1_2 = nn.Conv2d(256, 256, 1)
+        for m in self.modules():
+            if isinstance(m, nn.Conv2d):
+                self.xavier_init(m, distribution='uniform')
 
     def forward(self, x):
         names = list(x.keys())
