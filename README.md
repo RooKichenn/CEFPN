@@ -22,8 +22,6 @@
   
     ├── my_dataset.py: 自定义dataset用于读取COCO数据集
   
-    ├── train_mobilenet.py: 以MobileNetV2做为backbone进行训练
-  
     ├── train_resnet50_fpn.py: 以resnet50+CEFPN做为backbone进行训练
   
     ├── train_multi_GPU.py: 针对使用多GPU的用户使用
