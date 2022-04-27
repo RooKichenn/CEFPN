@@ -60,18 +60,16 @@ class CAG(nn.Module):
         super(CAG, self).__init__()
         self.maxpool = nn.AdaptiveMaxPool2d((1, 1))
         self.avgpool = nn.AdaptiveAvgPool2d((1, 1))
+        self.relu1 = nn.ReLU()
         self.fc1 = nn.Conv2d(in_channels, in_channels, 1)
         self.fc2 = nn.Conv2d(in_channels, in_channels, 1)
         self.sigmoid = nn.Sigmoid()
-        for m in self.modules():
-            if isinstance(m, nn.Conv2d):
-                xavier_init(m, distribution='uniform')
 
     def forward(self, x):
-        fc1 = self.sigmoid(self.fc1(self.avgpool(x)))
-        fc2 = self.fc2(self.maxpool(x))
+        fc1 = self.relu1(self.fc1(self.avgpool(x)))
+        fc2 = self.relu1(self.fc2(self.maxpool(x)))
         out = fc1 + fc2
-        return out
+        return self.sigmoid(out)
 
 
 class FeaturePyramidNetwork(nn.Module):
