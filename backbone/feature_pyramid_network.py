@@ -156,7 +156,7 @@ class FeaturePyramidNetwork(nn.Module):
         # ------------------------------- #
         # 得到特征图I
         # ------------------------------- #
-        out_size = P3.shape[-2:]
+        out_size = P4.shape[-2:]
         SCE_out = F.interpolate(SCE_out, size=out_size, mode="nearest")
         I_P4 = F.interpolate(P4, size=out_size, mode="nearest")
         I_P3 = F.adaptive_max_pool2d(P3, output_size=out_size)
